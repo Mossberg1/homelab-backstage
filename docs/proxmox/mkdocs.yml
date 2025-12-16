@@ -1,0 +1,10 @@
+site_name: Proxmox Documentation
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - VMs: vms.md
+  - LXCs: lxc.md
+  - Storage: storage.md
+plugins:
+  - techdocs-core
