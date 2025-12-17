@@ -21,4 +21,4 @@ kind: User
 metadata:
   name: Mossberg1
 spec:
-  memberOf: [guests]
+  memberOf: [guests, homelab]
