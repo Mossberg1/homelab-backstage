@@ -11,6 +11,5 @@ spec:
   lifecycle: production
   owner: user:Mossberg1
   system: homelab
-relations:
-  - type: dependsOn
-    targetRef: resource:dell-poweredge-r440
+  dependsOn:
+    - resource:dell-poweredge-r440
