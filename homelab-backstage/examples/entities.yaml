@@ -1,4 +1,12 @@
 ---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: homelab
+  title: Homelab
+spec:
+  owner: group:homelab
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-system
 apiVersion: backstage.io/v1alpha1
 kind: System

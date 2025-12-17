@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: dell-poweredge-r440
+  title: Dell PowerEdge R440
+  description: Dell PowerEdge R440 with proxmox installed.
+  annotations:
+    backstage.io/techdocs-ref: dir:../../../docs/dell-poweredge-r440/
+spec:
+  type: server
+  lifecycle: production
+  owner: user:Mossberg1
+  system: homelab

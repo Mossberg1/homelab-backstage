@@ -1,0 +1,7 @@
+site_name: Dell PowerEdge R440 Documentation
+theme:
+  name: material
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core
