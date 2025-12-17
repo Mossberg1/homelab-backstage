@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: proxmox
+  title: Proxmox
+  description: Proxmox.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: hypervisor
+  lifecycle: production
+  owner: user:Mossberg1
+  system: homelab
+relations:
+  - type: dependsOn
+    targetRef: resource:dell-poweredge-r440
