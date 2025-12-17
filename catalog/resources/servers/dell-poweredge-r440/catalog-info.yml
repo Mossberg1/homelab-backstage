@@ -5,7 +5,7 @@ metadata:
   title: Dell PowerEdge R440
   description: Dell PowerEdge R440 with proxmox installed.
   annotations:
-    backstage.io/techdocs-ref: dir:../../../docs/dell-poweredge-r440/
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: server
   lifecycle: production
