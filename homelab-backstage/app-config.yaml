@@ -131,3 +131,11 @@ kubernetes:
 permission:
   # setting this to `false` will disable permissions
   enabled: true
+
+proxmox:
+  host: 192.168.1.110
+  port: 8006
+  user: root
+  realm: pam
+  tokenId: backstage
+  tokenSecret: ${PROXMOX_TOKEN}
