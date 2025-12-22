@@ -15,12 +15,12 @@ export const proxmoxPlugin = createBackendPlugin({
     env.registerInit({
       deps: {
         httpRouter: coreServices.httpRouter,
-        config: coreServices.rootConfig
+        config: coreServices.rootConfig,
       },
       async init({ httpRouter, config }) {
         httpRouter.use(
           await createRouter({
-            config
+            config,
           }),
         );
 

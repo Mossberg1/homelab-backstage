@@ -9,6 +9,15 @@ export type ProxmoxApiClientOptions = {
     tokenSecret: string;
 }
 
+export enum TimeFrame {
+    Hour = "hour",
+    Day = "day",
+    Week = "week",
+    Month = "month",
+    Year = "year",
+    Decade = "decade"
+}
+
 export class ProxmoxApiClient {
     private readonly _baseUrl: string;
     private readonly _authHeader: string;
@@ -23,6 +32,36 @@ export class ProxmoxApiClient {
             headers: {
                 "Authorization": this._authHeader
             },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Proxmox API error: ${res.statusText}`);
+        }
+
+        const json = await res.json();
+        return json.data;
+    }
+
+    async getNodeStatus(id: string) {
+        const res = await fetch(`${this._baseUrl}/nodes/${id}/status/`, {
+            headers: {
+                "Authorization": this._authHeader
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Proxmox API error: ${res.statusText}`);
+        }
+
+        const json = await res.json();
+        return json.data;
+    }
+
+    async getNodeStats(id: string, timeframe: TimeFrame = TimeFrame.Hour) {
+        const res = await fetch(`${this._baseUrl}/nodes/${id}/rrddata?timeframe=${timeframe}`, {
+            headers: {
+                "Authorization": this._authHeader
+            }
         });
 
         if (!res.ok) {
