@@ -14,7 +14,7 @@ import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 //   curl http://localhost:7007/api/proxmox/todos -H 'Content-Type: application/json' -d '{"title": "My Todo"}'
 //   curl http://localhost:7007/api/proxmox/todos -H 'Content-Type: application/json' -d '{"title": "My Todo", "entityRef": "component:default/sample"}'
 //
-// List TODOs:
+// List TODOs
 //
 //   curl http://localhost:7007/api/proxmox/todos
 //
@@ -22,6 +22,8 @@ import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
 //
 //   curl http://localhost:7007/api/proxmox/todos -H 'Authorization: Bearer mock-none-token'
 //   curl http://localhost:7007/api/proxmox/todos -H 'Authorization: Bearer mock-service-token'
+//
+// Read more about authentication for backend plugins
 
 const backend = createBackend();
 
