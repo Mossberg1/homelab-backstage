@@ -57,6 +57,7 @@ import {
   EntityKubernetesContent,
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
+import { NodePage } from '@internal/backstage-plugin-proxmox-frontend/src/pages/NodePage';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -186,6 +187,18 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
+    <EntityLayout.Route 
+      path="/proxmox-node"  
+      title="Node Metrics"
+      if={entity =>
+        entity.kind === 'Resource' &&
+        entity.metadata.annotations?.['proxmox.io/type'] === 'node'
+      }
+    >
+      <NodePage />
+    </EntityLayout.Route>
+
   </EntityLayout>
 );
 

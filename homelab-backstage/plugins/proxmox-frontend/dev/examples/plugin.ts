@@ -2,7 +2,7 @@ import {
   createPlugin,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { attachEntityPage } from '@backstage/plugin-catalog-react';
+
 import { rootRouteRef } from './routes';
 
 export const proxmoxFrontendPlugin = createPlugin({
@@ -20,5 +20,3 @@ export const ProxmoxFrontendPage = proxmoxFrontendPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
-
-
