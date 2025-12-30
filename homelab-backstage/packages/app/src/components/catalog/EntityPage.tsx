@@ -188,17 +188,6 @@ const serviceEntityPage = (
       {techdocsContent}
     </EntityLayout.Route>
 
-    <EntityLayout.Route 
-      path="/proxmox-node"  
-      title="Node Metrics"
-      if={entity =>
-        entity.kind === 'Resource' &&
-        entity.metadata.annotations?.['proxmox.io/type'] === 'node'
-      }
-    >
-      <NodePage />
-    </EntityLayout.Route>
-
   </EntityLayout>
 );
 
@@ -253,6 +242,7 @@ const defaultEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+    
   </EntityLayout>
 );
 
@@ -409,6 +399,29 @@ const domainPage = (
   </EntityLayout>
 );
 
+const resourcePage = (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      {overviewContent}
+    </EntityLayout.Route>
+    <EntityLayout.Route 
+      path="/proxmox-node"  
+      title="Node Metrics"
+      if={entity =>
+        entity.kind === 'Resource' &&
+        entity.metadata.annotations?.['proxmox.io/type'] === 'node'
+      }
+    >
+      <NodePage />
+    </EntityLayout.Route>
+    <EntityLayout.Route path="/docs" title="Docs">
+      {techdocsContent}
+    </EntityLayout.Route>
+  </EntityLayout>
+);
+
+
+
 export const entityPage = (
   <EntitySwitch>
     <EntitySwitch.Case if={isKind('component')} children={componentPage} />
@@ -417,6 +430,7 @@ export const entityPage = (
     <EntitySwitch.Case if={isKind('user')} children={userPage} />
     <EntitySwitch.Case if={isKind('system')} children={systemPage} />
     <EntitySwitch.Case if={isKind('domain')} children={domainPage} />
+    <EntitySwitch.Case if={isKind('resource')} children={resourcePage} />
 
     <EntitySwitch.Case>{defaultEntityPage}</EntitySwitch.Case>
   </EntitySwitch>
