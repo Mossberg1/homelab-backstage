@@ -41,6 +41,22 @@ export async function createRouter({
     return res.json(node);
   });
 
+  router.get('/nodes/:nodeId/cpu-usage', async (req, res) => {
+    const nodeId = req.params.nodeId;
+
+    const cpu = await proxmoxApi.getNodeCpuUsage(nodeId);
+
+    return res.json(cpu);
+  });
+
+  router.get('/nodes/:nodeId/mem-usage', async (req, res) => {
+    const nodeId = req.params.nodeId;
+
+    const memory = await proxmoxApi.getNodeMemoryUsage(nodeId);
+
+    return res.json(memory);
+  });
+
   router.get('/nodes/:nodeId/stats', async (req, res) => {
     const nodeId = req.params.nodeId
     const timeframeParam = req.query.timeframe?.toString() || "hour";

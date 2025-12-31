@@ -1,6 +1,8 @@
-import { InfoCard } from '@backstage/core-components';
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { CpuGauge } from '../components/CpuGaugeComponent/CpuGaugeComponent';
+import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeComponent';
+import { Grid } from '@material-ui/core';
 
 
 export const NodePage = () => {
@@ -13,8 +15,14 @@ export const NodePage = () => {
 
     return (
         <>
-            <InfoCard title={`Proxmox Node: ${nodeId}`}>    
-            </InfoCard>
+            <Grid container spacing={2}>
+                <Grid item>
+                    <CpuGauge nodeId={nodeId}/>
+                </Grid>
+                <Grid item>
+                    <MemoryGauge nodeId={nodeId}/>
+                </Grid>
+            </Grid>
         </>
     );
 }

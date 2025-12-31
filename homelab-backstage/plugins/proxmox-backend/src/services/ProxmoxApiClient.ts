@@ -45,6 +45,19 @@ export class ProxmoxApiClient {
         return json.data as Array<ProxmoxNode>;
     }
 
+
+    async getNodeCpuUsage(id: string): Promise<Number> {
+        const nodeStatus = await this.getNodeStatus(id);
+        return nodeStatus.cpu;
+    }
+
+
+    async getNodeMemoryUsage(id: string): Promise<Number> {
+        const nodeStatus = await this.getNodeStatus(id);
+        return this.calculateMemoryUsage(nodeStatus);
+    }
+
+
     async getNodeStatus(id: string): Promise<ProxmoxNodeStatus> {
         const res = await fetch(`${this._baseUrl}/nodes/${id}/status/`, {
             headers: {
@@ -60,6 +73,7 @@ export class ProxmoxApiClient {
         return json.data as ProxmoxNodeStatus;
     }
 
+
     async getNodeStats(id: string, timeframe: TimeFrame = TimeFrame.Hour): Promise<Array<ProxmoxNodeStats>> {
         const res = await fetch(`${this._baseUrl}/nodes/${id}/rrddata?timeframe=${timeframe}`, {
             headers: {
@@ -73,5 +87,13 @@ export class ProxmoxApiClient {
 
         const json = await res.json();
         return json.data as Array<ProxmoxNodeStats>;
+    }
+
+
+    private calculateMemoryUsage(nodeStatus: ProxmoxNodeStatus) {
+        const used = nodeStatus.memory.used;
+        const total = nodeStatus.memory.total;
+
+        return (used / total);
     }
 }
