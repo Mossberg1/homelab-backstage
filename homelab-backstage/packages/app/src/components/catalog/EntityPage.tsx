@@ -408,7 +408,6 @@ const resourcePage = (
       path="/proxmox-node"  
       title="Node Metrics"
       if={entity =>
-        entity.kind === 'Resource' &&
         entity.metadata.annotations?.['proxmox.io/type'] === 'node'
       }
     >

@@ -1,7 +1,7 @@
 import catalogApiRef from '@backstage/plugin-catalog-backend';
 import { Entity } from '@backstage/catalog-model';
 
-export async function getNodeIdForEntity(entity: Entity): Promise<string> {
+export function getNodeId(entity: Entity): string {
     const annotationKey = 'proxmox.io/node-id';
     const nodeId = entity.metadata.annotations?.[annotationKey];
 

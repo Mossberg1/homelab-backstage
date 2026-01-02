@@ -1,77 +1,91 @@
 import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats } from '../types';
-
+import { Timeframe } from '../utils/timeframe';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export type ProxmoxApiClientOptions = {
-    host: string;
-    port: number;
-    user: string;
-    realm: string;
-    tokenId: string;
-    tokenSecret: string;
-}
-
-export enum TimeFrame {
-    Hour = "hour",
-    Day = "day",
-    Week = "week",
-    Month = "month",
-    Year = "year",
-    Decade = "decade"
-}
+  host: string;
+  port: number;
+  user: string;
+  realm: string;
+  tokenId: string;
+  tokenSecret: string;
+};
 
 export class ProxmoxApiClient {
-    private readonly _baseUrl: string;
-    private readonly _authHeader: string;
+  private readonly _baseUrl: string;
+  private readonly _authHeader: string;
 
-    constructor(opt: ProxmoxApiClientOptions) {
-        this._baseUrl = `https://${opt.host}:${opt.port}/api2/json`
-        this._authHeader = `PVEAPIToken=${opt.user}@${opt.realm}!${opt.tokenId}=${opt.tokenSecret}`;
+  constructor(opt: ProxmoxApiClientOptions) {
+    this._baseUrl = `https://${opt.host}:${opt.port}/api2/json`;
+    this._authHeader = `PVEAPIToken=${opt.user}@${opt.realm}!${opt.tokenId}=${opt.tokenSecret}`;
+  }
+
+  async getNodes(): Promise<Array<ProxmoxNode>> {
+    const res = await fetch(`${this._baseUrl}/nodes`, {
+      headers: {
+        Authorization: this._authHeader,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
     }
 
-    async getNodes(): Promise<Array<ProxmoxNode>> {
-        const res = await fetch(`${this._baseUrl}/nodes`, {
-            headers: {
-                "Authorization": this._authHeader
-            },
-        });
+    const json = await res.json();
+    return json.data as Array<ProxmoxNode>;
+  }
 
-        if (!res.ok) {
-            throw new Error(`Proxmox API error: ${res.statusText}`);
-        }
+  async getNodeCpuUsage(id: string): Promise<Number> {
+    const nodeStatus = await this.getNodeStatus(id);
+    return nodeStatus.cpu;
+  }
 
-        const json = await res.json();
-        return json.data as Array<ProxmoxNode>;
+  async getNodeMemoryUsage(id: string): Promise<Number> {
+    const nodeStatus = await this.getNodeStatus(id);
+    return this.calculateMemoryUsage(nodeStatus);
+  }
+
+  async getNodeStatus(id: string): Promise<ProxmoxNodeStatus> {
+    const res = await fetch(`${this._baseUrl}/nodes/${id}/status/`, {
+      headers: {
+        Authorization: this._authHeader,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
     }
 
-    async getNodeStatus(id: string): Promise<ProxmoxNodeStatus> {
-        const res = await fetch(`${this._baseUrl}/nodes/${id}/status/`, {
-            headers: {
-                "Authorization": this._authHeader
-            }
-        });
+    const json = await res.json();
+    return json.data as ProxmoxNodeStatus;
+  }
 
-        if (!res.ok) {
-            throw new Error(`Proxmox API error: ${res.statusText}`);
-        }
+  async getNodeStats(
+    id: string,
+    timeframe: Timeframe = Timeframe.Hour,
+  ): Promise<Array<ProxmoxNodeStats>> {
+    const res = await fetch(
+      `${this._baseUrl}/nodes/${id}/rrddata?timeframe=${timeframe}`,
+      {
+        headers: {
+          Authorization: this._authHeader,
+        },
+      },
+    );
 
-        const json = await res.json();
-        return json.data as ProxmoxNodeStatus;
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
     }
 
-    async getNodeStats(id: string, timeframe: TimeFrame = TimeFrame.Hour): Promise<Array<ProxmoxNodeStats>> {
-        const res = await fetch(`${this._baseUrl}/nodes/${id}/rrddata?timeframe=${timeframe}`, {
-            headers: {
-                "Authorization": this._authHeader
-            }
-        });
+    const json = await res.json();
+    return json.data as Array<ProxmoxNodeStats>;
+  }
 
-        if (!res.ok) {
-            throw new Error(`Proxmox API error: ${res.statusText}`);
-        }
+  private calculateMemoryUsage(nodeStatus: ProxmoxNodeStatus) {
+    const used = nodeStatus.memory.used;
+    const total = nodeStatus.memory.total;
 
-        const json = await res.json();
-        return json.data as Array<ProxmoxNodeStats>;
-    }
+    return used / total;
+  }
 }
