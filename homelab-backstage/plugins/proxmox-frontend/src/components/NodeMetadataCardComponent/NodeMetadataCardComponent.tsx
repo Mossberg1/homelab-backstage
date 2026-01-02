@@ -20,7 +20,7 @@ export const NodeMetadataCard = (props: Props) => {
     const { value, loading, error } = useAsync(async () => {
         const baseUrl = await discoveryApi.getBaseUrl('proxmox');
         const response = await fetchApi.fetch(`${baseUrl}/nodes/${props.nodeId}`);
-        console.log(response);
+
         return response.json();
     }, [fetchApi, discoveryApi, props.nodeId]);
 
