@@ -1,6 +1,6 @@
 import { ProxmoxApiClient, ProxmoxApiClientOptions } from './ProxmoxApiClient';
 import { Timeframe } from '../utils/timeframe';
-import { ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus } from '../types';
+import { ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm } from '../types';
 
 
 // Mock fetch()
@@ -85,6 +85,24 @@ const mockProxmoxNodeStats: ProxmoxNodeStats = {
     rootused: 0,
     memused: 0
 };
+
+const mockVm: QemuVm = {
+    vmid: 0,
+    mem: 5,
+    diskwrite: 0,
+    status: 'test-status',
+    disk: 0,
+    maxdisk: 0,
+    netin: 0,
+    cpu: 0.1,
+    pid: 0,
+    uptime: 3600,
+    diskread: 0,
+    name: 'test-name',
+    maxmem: 10,
+    cpus: 10,
+    netout: 0
+}
 
 
 describe('ProxmoxApiClient', () => {
@@ -215,6 +233,28 @@ describe('ProxmoxApiClient', () => {
                 expect.stringContaining('timeframe=week'),
                 expect.anything()
             );
+        });
+    });
+
+    describe('getNodeVms', () => {
+        const nodeId = 'pve1';
+
+        test('returns a Array<QemuVm> on success', async () => {
+            const mockData = new Array<QemuVm>(mockVm);
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData })
+            });
+
+            const response = await client.getNodeVms(nodeId);
+
+            expect(response).toEqual(mockData);
+        });
+
+        test('throws if API response is not ok', async () => {
+            fetchMock.mockResolvedValue({ ok: false });
+            expect(client.getNodeVms(nodeId)).rejects.toThrow();
         });
     });
 });
