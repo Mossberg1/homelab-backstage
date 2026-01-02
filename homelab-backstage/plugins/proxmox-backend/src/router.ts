@@ -1,8 +1,11 @@
 import express from 'express';
 import Router from 'express-promise-router';
 import { Config } from '@backstage/config';
-import { ProxmoxApiClient, ProxmoxApiClientOptions } from './services/ProxmoxApiClient';
-import { parseTimeFrame } from './utils/timeFrameUtils';
+import {
+  ProxmoxApiClient,
+  ProxmoxApiClientOptions,
+} from './services/ProxmoxApiClient';
+import { parseTimeframe } from './utils/timeframe';
 
 function createProxmoxApiClient(config: Config): ProxmoxApiClient {
   const options: ProxmoxApiClientOptions = {
@@ -11,16 +14,16 @@ function createProxmoxApiClient(config: Config): ProxmoxApiClient {
     user: config.getString('proxmox.user'),
     realm: config.getString('proxmox.realm'),
     tokenId: config.getString('proxmox.tokenId'),
-    tokenSecret: config.getString('proxmox.tokenSecret')
-  }
+    tokenSecret: config.getString('proxmox.tokenSecret'),
+  };
 
   return new ProxmoxApiClient(options);
 }
 
 export async function createRouter({
-  config
+  config,
 }: {
-  config: Config
+  config: Config;
 }): Promise<express.Router> {
   const router = Router();
   router.use(express.json());
@@ -58,9 +61,9 @@ export async function createRouter({
   });
 
   router.get('/nodes/:nodeId/stats', async (req, res) => {
-    const nodeId = req.params.nodeId
-    const timeframeParam = req.query.timeframe?.toString() || "hour";
-    const timeframe = parseTimeFrame(timeframeParam);
+    const nodeId = req.params.nodeId;
+    const timeframeParam = req.query.timeframe?.toString() || 'hour';
+    const timeframe = parseTimeframe(timeframeParam);
 
     const stats = await proxmoxApi.getNodeStats(nodeId, timeframe);
 

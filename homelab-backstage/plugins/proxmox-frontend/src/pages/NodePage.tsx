@@ -28,34 +28,29 @@ export const NodePage: React.FC = () => {
           <SupportButton />
         </ContentHeader>
 
-        {/* Main Content */}
         <Grid container spacing={3}>
-          {/* Left column */}
-          <Grid item xs={12} md={7}>
+          {/* Metadata */}
+          <Grid item xs={12}>
+            <NodeMetadataCard nodeId={nodeId} />
+          </Grid>
+
+          {/* Metrics */}
+          <Grid item xs={12} md={4}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <NodeMetadataCard nodeId={nodeId} />
+                <CpuGauge nodeId={nodeId} />
               </Grid>
-
               <Grid item xs={12}>
-                <InfoCard title="Running Workloads">
-                  <VmTable nodeId={nodeId} />
-                </InfoCard>
+                <MemoryGauge nodeId={nodeId} />
               </Grid>
             </Grid>
           </Grid>
 
-          {/* Right column */}
-          <Grid item xs={12} md={5}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <CpuGauge nodeId={nodeId} />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <MemoryGauge nodeId={nodeId} />
-              </Grid>
-            </Grid>
+          {/* Workloads */}
+          <Grid item xs={12} md={8}>
+            <InfoCard title="Running Workloads">
+              <VmTable nodeId={nodeId} />
+            </InfoCard>
           </Grid>
         </Grid>
       </Content>

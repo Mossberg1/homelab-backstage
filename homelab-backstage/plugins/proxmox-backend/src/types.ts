@@ -81,7 +81,7 @@ export type ProxmoxNodeStatus = {
     kversion: string;
     'boot-info': BootInfo;
     cpuinfo: CpuInfo;
-    preversion: string;
+    pveversion: string;
     loadavg: Array<string>;
 }
 

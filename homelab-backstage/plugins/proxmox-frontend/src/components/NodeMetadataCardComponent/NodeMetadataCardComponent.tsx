@@ -5,31 +5,12 @@ import {
     fetchApiRef
 } from '@backstage/core-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
+import { uptimeToString } from '../../utils/formatting';
 
 
 type Props = {
     nodeId: string;
 };
-
-
-function toUptime(seconds: number): string {
-    const days = Math.floor(seconds / (3600 * 24));
-    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-
-    const uptime = Array<String>();
-
-    if (days > 0) {
-        uptime.push(`${days}d`);
-    }
-    if (hours > 0) {
-        uptime.push(`${hours}h`);
-    }
-    
-    uptime.push(`${minutes}m`);
-
-    return uptime.join(' ');
-}
 
 
 export const NodeMetadataCard = (props: Props) => {
@@ -55,9 +36,9 @@ export const NodeMetadataCard = (props: Props) => {
         'CPU Model': value.cpuinfo.model || 'Unknown',
         'Kernel': value['current-kernel'].release || 'Unknown',
         'PVE Version': value.pveversion || 'Unknown',
-        'Uptime': toUptime(value.uptime || 0)
+        'Uptime': uptimeToString(value.uptime || 0)
     };
- 
+
     return (
         <InfoCard title='Node Metadata'>
             <StructuredMetadataTable metadata={metadata}/>
