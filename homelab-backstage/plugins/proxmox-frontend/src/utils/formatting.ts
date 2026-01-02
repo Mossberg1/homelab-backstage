@@ -1,3 +1,9 @@
+export function bytesToGbString(bytes: number): string {
+    const gb = bytes / (1024 * 1024 * 1024);
+    return `${parseFloat(gb.toFixed(1))} GB`;
+}
+
+
 export function uptimeToString(seconds: number): string {
     if (seconds <= 0) {
         return '0m';
