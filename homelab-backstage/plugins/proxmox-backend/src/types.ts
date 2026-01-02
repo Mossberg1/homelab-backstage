@@ -101,3 +101,21 @@ export type ProxmoxNodeStats = {
     rootused: number;
     memused: number;
 }
+
+export type QemuVm = {
+    vmid: number;
+    mem: number;
+    diskwrite: number;
+    status: string;
+    disk: number;
+    maxdisk: number;
+    netin: number;
+    cpu: number;
+    pid: number;
+    uptime: number;
+    diskread: number;
+    name: string;
+    maxmem: number;
+    cpus: number;
+    netout: number;
+}

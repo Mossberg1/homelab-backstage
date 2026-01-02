@@ -1,4 +1,4 @@
-import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats } from '../types';
+import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats, QemuVm } from '../types';
 import { Timeframe } from '../utils/timeframe';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -80,6 +80,23 @@ export class ProxmoxApiClient {
 
     const json = await res.json();
     return json.data as Array<ProxmoxNodeStats>;
+  }
+
+  async getNodeVms(id: string): Promise<Array<QemuVm>> {
+    const res = await fetch(
+        `${this._baseUrl}/nodes/${id}/qemu`, {
+            headers: {
+                Authorization: this._authHeader
+            }
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    return json.data as Array<QemuVm>;
   }
 
   private calculateMemoryUsage(nodeStatus: ProxmoxNodeStatus) {
