@@ -9,59 +9,39 @@ import request from 'supertest';
 import { createRouter } from './router';
 import { todoListServiceRef } from '../dev/examples/TodoListService';
 
-const mockTodoItem = {
-  title: 'Do the thing',
-  id: '123',
-  createdBy: mockCredentials.user().principal.userEntityRef,
-  createdAt: new Date().toISOString(),
+const mockConfig = {
+  getString: (key: string) => {
+    const values: Record<string, string> = {
+      'proxmox.host': 'test-host',
+      'proxmox.user': 'test-user',
+      'proxmox.realm': 'pam',
+      'proxmox.tokenId': 'test-token',
+      'proxmox.tokenSecret': 'test-secret',
+    };
+    return values[key];
+  },
+  getNumber: (key: string) => {
+    if (key === 'proxmox.port') return 8006;
+    return 0;
+  },
 };
 
 // TEMPLATE NOTE:
 // Testing the router directly allows you to write a unit test that mocks the provided options.
 describe('createRouter', () => {
   let app: express.Express;
-  let todoList: jest.Mocked<typeof todoListServiceRef.T>;
+
 
   beforeEach(async () => {
-    todoList = {
-      createTodo: jest.fn(),
-      listTodos: jest.fn(),
-      getTodo: jest.fn(),
-    };
     const router = await createRouter({
-      httpAuth: mockServices.httpAuth(),
-      todoList,
+      config: mockConfig as any
     });
     app = express();
     app.use(router);
     app.use(mockErrorHandler());
   });
 
-  it('should create a TODO', async () => {
-    todoList.createTodo.mockResolvedValue(mockTodoItem);
+  // TODO: Add tests for routes here: 
+  test('test', () => { expect(true).toEqual(true) }); // Just added to avoid erros since this file does not have any tests.
 
-    const response = await request(app).post('/todos').send({
-      title: 'Do the thing',
-    });
-
-    expect(response.status).toBe(201);
-    expect(response.body).toEqual(mockTodoItem);
-  });
-
-  it('should not allow unauthenticated requests to create a TODO', async () => {
-    todoList.createTodo.mockResolvedValue(mockTodoItem);
-
-    // TEMPLATE NOTE:
-    // The HttpAuth mock service considers all requests to be authenticated as a
-    // mock user by default. In order to test other cases we need to explicitly
-    // pass an authorization header with mock credentials.
-    const response = await request(app)
-      .post('/todos')
-      .set('Authorization', mockCredentials.none.header())
-      .send({
-        title: 'Do the thing',
-      });
-
-    expect(response.status).toBe(401);
-  });
 });

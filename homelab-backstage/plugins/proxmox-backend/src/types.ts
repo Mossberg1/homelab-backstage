@@ -119,3 +119,20 @@ export type QemuVm = {
     cpus: number;
     netout: number;
 }
+
+
+export type NodeDisk = {
+    devpath: string;
+    gpt: boolean;
+    mounted: boolean;
+    osdid: number;
+    "osdid-list": Array<number>;
+    size: number;
+    health: string;
+    model: string;
+    parent: string;
+    serial: string;
+    used: string;
+    vendor: string;
+    wwn: string;
+}

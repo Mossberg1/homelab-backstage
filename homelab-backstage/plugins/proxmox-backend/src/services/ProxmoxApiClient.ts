@@ -1,4 +1,4 @@
-import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats, QemuVm } from '../types';
+import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats, QemuVm, NodeDisk } from '../types';
 import { Timeframe } from '../utils/timeframe';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -39,6 +39,22 @@ export class ProxmoxApiClient {
   async getNodeCpuUsage(id: string): Promise<Number> {
     const nodeStatus = await this.getNodeStatus(id);
     return nodeStatus.cpu;
+  }
+
+  async getNodeDisks(id: string): Promise<Array<NodeDisk>> {
+    const res = await fetch(`${this._baseUrl}/nodes/${id}/disks/list`, {
+      headers: {
+        Authorization: this._authHeader
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+
+    return json.data as Array<NodeDisk>;
   }
 
   async getNodeMemoryUsage(id: string): Promise<Number> {

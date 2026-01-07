@@ -52,6 +52,13 @@ export async function createRouter({
     return res.json(cpu);
   });
 
+  router.get('/nodes/:nodeId/disks', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const disks = await proxmoxApi.getNodeDisks(nodeId);
+
+    return res.json(disks);
+  });
+
   router.get('/nodes/:nodeId/mem-usage', async (req, res) => {
     const nodeId = req.params.nodeId;
 

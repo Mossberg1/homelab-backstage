@@ -12,6 +12,7 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 import { VmTable } from '../components/VmTableComponent/VmTableComponent';
+import { DisksTable } from '../components/DisksTableComponent/DisksTableComponent';
 
 export const NodePage: React.FC = () => {
   const { entity } = useEntity();
@@ -29,28 +30,22 @@ export const NodePage: React.FC = () => {
         </ContentHeader>
 
         <Grid container spacing={3}>
-          {/* Metadata */}
-          <Grid item xs={12}>
+          <Grid item xs={12} md={4}>
             <NodeMetadataCard nodeId={nodeId} />
           </Grid>
-
-          {/* Metrics */}
           <Grid item xs={12} md={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <CpuGauge nodeId={nodeId} />
-              </Grid>
-              <Grid item xs={12}>
-                <MemoryGauge nodeId={nodeId} />
-              </Grid>
-            </Grid>
+            <CpuGauge nodeId={nodeId} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <MemoryGauge nodeId={nodeId} />
           </Grid>
 
-          {/* Workloads */}
-          <Grid item xs={12} md={8}>
-            <InfoCard title="Running Workloads">
-              <VmTable nodeId={nodeId} />
-            </InfoCard>
+          <Grid item xs={12} md={6}>
+            <DisksTable nodeId={nodeId} />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <VmTable nodeId={nodeId} />
           </Grid>
         </Grid>
       </Content>

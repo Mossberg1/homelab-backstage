@@ -1,6 +1,6 @@
 import { ProxmoxApiClient, ProxmoxApiClientOptions } from './ProxmoxApiClient';
 import { Timeframe } from '../utils/timeframe';
-import { ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm } from '../types';
+import { NodeDisk, ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm } from '../types';
 
 
 // Mock fetch()
@@ -104,6 +104,22 @@ const mockVm: QemuVm = {
     netout: 0
 }
 
+const mockNodeDisk: NodeDisk = {
+    devpath: 'test-devpath',
+    gpt: true,
+    mounted: true,
+    osdid: 0,
+    'osdid-list': [0, 1, 2, 3],
+    size: 340234543,
+    health: 'test-health',
+    model: 'test-model',
+    parent: 'test-parent',
+    serial: 'test-serial',
+    used: 'test-used',
+    vendor: 'test-vendor',
+    wwn: 'test-wwn'
+}
+
 
 describe('ProxmoxApiClient', () => {
     let client: ProxmoxApiClient;
@@ -158,6 +174,31 @@ describe('ProxmoxApiClient', () => {
             const cpuUsage = await client.getNodeCpuUsage(nodeId);
 
             expect(cpuUsage).toBe(expectedCpuUsage);
+        });
+    });
+
+    describe('getNodeDisks', () => {
+        const nodeId = 'pve1';
+
+        test('recives disks for a node on success', async () => {
+            const mockData = new Array<NodeDisk>(mockNodeDisk);
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData})
+            });
+
+            const disks = await client.getNodeDisks(nodeId);
+
+            expect(disks).toEqual(mockData)
+        });
+
+        test('should throw error when API response is not ok', async () => {
+            fetchMock.mockResolvedValue({
+                ok: false
+            });
+
+            expect(client.getNodeDisks(nodeId)).rejects.toThrow();
         });
     });
 

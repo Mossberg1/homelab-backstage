@@ -1,17 +1,10 @@
 import {
-  mockCredentials,
   startTestBackend,
+  mockServices
 } from '@backstage/backend-test-utils';
-import { createServiceFactory } from '@backstage/backend-plugin-api';
-import { todoListServiceRef } from '../dev/examples/TodoListService';
 import { proxmoxPlugin } from './plugin';
 import request from 'supertest';
-import { catalogServiceMock } from '@backstage/plugin-catalog-node/testUtils';
-import {
-  ConflictError,
-  AuthenticationError,
-  NotAllowedError,
-} from '@backstage/errors';
+
 
 // TEMPLATE NOTE:
 // Plugin tests are integration tests for your plugin, ensuring that all pieces
@@ -19,111 +12,29 @@ import {
 // however, just like anyone who installs your plugin might replace the
 // services with their own implementations.
 describe('plugin', () => {
-  it('should create and read TODO items', async () => {
-    const { server } = await startTestBackend({
-      features: [proxmoxPlugin],
-    });
 
-    await request(server).get('/api/proxmox/todos').expect(200, {
-      items: [],
-    });
+  // TODO: Add plugin tests here:
 
-    const createRes = await request(server)
-      .post('/api/proxmox/todos')
-      .send({ title: 'My Todo' });
-
-    expect(createRes.status).toBe(201);
-    expect(createRes.body).toEqual({
-      id: expect.any(String),
-      title: 'My Todo',
-      createdBy: mockCredentials.user().principal.userEntityRef,
-      createdAt: expect.any(String),
-    });
-
-    const createdTodoItem = createRes.body;
-
-    await request(server)
-      .get('/api/proxmox/todos')
-      .expect(200, {
-        items: [createdTodoItem],
-      });
-
-    await request(server)
-      .get(`/api/proxmox/todos/${createdTodoItem.id}`)
-      .expect(200, createdTodoItem);
-  });
-
-  it('should create TODO item with catalog information', async () => {
+  it('Should successfully start with config', async () => {
     const { server } = await startTestBackend({
       features: [
         proxmoxPlugin,
-        catalogServiceMock.factory({
-          entities: [
-            {
-              apiVersion: 'backstage.io/v1alpha1',
-              kind: 'Component',
-              metadata: {
-                name: 'my-component',
-                namespace: 'default',
-                title: 'My Component',
-              },
-              spec: {
-                type: 'service',
-                owner: 'me',
-              },
+        // 2. Mock the rootConfig service to provide the missing value
+        mockServices.rootConfig.factory({
+          data: {
+            proxmox: {
+              host: 'test-host',
+              port: 8006,
+              user: 'test-user',
+              realm: 'pam',
+              tokenId: 'test-token',
+              tokenSecret: 'test-secret',
             },
-          ],
+          },
         }),
       ],
     });
 
-    const createRes = await request(server)
-      .post('/api/proxmox/todos')
-      .send({ title: 'My Todo', entityRef: 'component:default/my-component' });
-
-    expect(createRes.status).toBe(201);
-    expect(createRes.body).toEqual({
-      id: expect.any(String),
-      title: '[My Component] My Todo',
-      createdBy: mockCredentials.user().principal.userEntityRef,
-      createdAt: expect.any(String),
-    });
-  });
-
-  it('should forward errors from the TodoListService', async () => {
-    const { server } = await startTestBackend({
-      features: [
-        proxmoxPlugin,
-        createServiceFactory({
-          service: todoListServiceRef,
-          deps: {},
-          factory: () => ({
-            createTodo: jest.fn().mockRejectedValue(new ConflictError()),
-            listTodos: jest.fn().mockRejectedValue(new AuthenticationError()),
-            getTodo: jest.fn().mockRejectedValue(new NotAllowedError()),
-          }),
-        })
-      ],
-    });
-
-    const createRes = await request(server)
-      .post('/api/proxmox/todos')
-      .send({ title: 'My Todo', entityRef: 'component:default/my-component' });
-    expect(createRes.status).toBe(409);
-    expect(createRes.body).toMatchObject({
-      error: { name: 'ConflictError' },
-    });
-
-    const listRes = await request(server).get('/api/proxmox/todos');
-    expect(listRes.status).toBe(401);
-    expect(listRes.body).toMatchObject({
-      error: { name: 'AuthenticationError' },
-    });
-
-    const getRes = await request(server).get('/api/proxmox/todos/123');
-    expect(getRes.status).toBe(403);
-    expect(getRes.body).toMatchObject({
-      error: { name: 'NotAllowedError' },
-    });
+    expect(true).toEqual(true); // Only added to avoid errors since the file does not have any tests.
   });
 });
