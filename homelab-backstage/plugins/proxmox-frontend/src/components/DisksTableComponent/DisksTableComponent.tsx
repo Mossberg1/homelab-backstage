@@ -81,7 +81,15 @@ export const DisksTable = (props: Props) => {
   }, [fetchApi, discoveryApi, props.nodeId]);
 
   if (loading) {
-    return <Progress />;
+    return (
+      <Table 
+        title='Disks'
+        options={{ search: false, paging: false }}
+        columns={cols}
+        data={[]}
+        isLoading
+      />
+    );
   }
 
   if (error) {

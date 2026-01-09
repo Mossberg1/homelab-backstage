@@ -77,6 +77,13 @@ export async function createRouter({
     return res.json(stats);
   });
 
+  router.get('/nodes/:nodeId/needs-update', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const hasToUpdate = await proxmoxApi.nodeHasToUpdate(nodeId);
+
+    return res.json(hasToUpdate);
+  });
+
   router.get('/nodes/:nodeId/vms', async (req, res) => {
     const nodeId = req.params.nodeId;
 

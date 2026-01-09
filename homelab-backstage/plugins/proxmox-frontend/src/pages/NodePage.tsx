@@ -1,16 +1,15 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { CpuGauge } from '../components/CpuGaugeComponent/CpuGaugeComponent';
-import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeComponent';
 import { Grid } from '@material-ui/core';
-import { NodeMetadataCard } from '../components/NodeMetadataCardComponent/NodeMetadataCardComponent';
 import {
   Content,
   ContentHeader,
-  InfoCard,
   Page,
   SupportButton,
 } from '@backstage/core-components';
+import { CpuGauge } from '../components/CpuGaugeComponent/CpuGaugeComponent';
+import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeComponent';
+import { NodeMetadataCard } from '../components/NodeMetadataCardComponent/NodeMetadataCardComponent';
 import { VmTable } from '../components/VmTableComponent/VmTableComponent';
 import { DisksTable } from '../components/DisksTableComponent/DisksTableComponent';
 
@@ -30,6 +29,7 @@ export const NodePage: React.FC = () => {
         </ContentHeader>
 
         <Grid container spacing={3}>
+          {/* Top Row: Summary & Health (Stays the same) */}
           <Grid item xs={12} md={4}>
             <NodeMetadataCard nodeId={nodeId} />
           </Grid>
@@ -40,12 +40,14 @@ export const NodePage: React.FC = () => {
             <MemoryGauge nodeId={nodeId} />
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <DisksTable nodeId={nodeId} />
+          {/* Middle Row: The most content-heavy table gets full width */}
+          <Grid item xs={12}>
+            <VmTable nodeId={nodeId} />
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <VmTable nodeId={nodeId} />
+          {/* Bottom Row: Secondary table */}
+          <Grid item xs={12}>
+            <DisksTable nodeId={nodeId} />
           </Grid>
         </Grid>
       </Content>

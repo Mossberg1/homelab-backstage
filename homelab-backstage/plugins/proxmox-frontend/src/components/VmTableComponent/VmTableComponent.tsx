@@ -19,6 +19,18 @@ type Props = {
   nodeId: string;
 };
 
+const columns: TableColumn<QemuVm>[] = [
+  { title: 'ID', field: 'vmid' },
+  { title: 'Name', field: 'name' },
+  { title: 'Status', field: 'status' },
+  { title: 'Cores', field: 'cpus' },
+  {
+    title: 'Memory',
+    field: 'maxmem',
+    render: (row: QemuVm) => bytesToGbString(row.maxmem),
+  },
+];
+
 export const VmTable = (props: Props) => {
   const fetchApi = useApi(fetchApiRef);
   const discoveryApi = useApi(discoveryApiRef);
@@ -33,7 +45,15 @@ export const VmTable = (props: Props) => {
   }, [fetchApi, discoveryApi, props.nodeId]);
 
   if (loading) {
-    return <Progress />;
+    return (
+      <Table 
+        title='Virtual Machines'
+        options={{ search: false, paging: false, padding: 'dense' }}
+        data={[]}
+        columns={columns}
+        isLoading
+      />
+    );
   }
 
   if (error) {
@@ -44,25 +64,12 @@ export const VmTable = (props: Props) => {
     return <ResponseErrorPanel error={new Error('value is undefined')} />;
   }
 
-  const columns: TableColumn<QemuVm>[] = [
-    { title: 'ID', field: 'vmid' },
-    { title: 'Name', field: 'name' },
-    { title: 'Status', field: 'status' },
-    { title: 'Cores', field: 'cpus' },
-    {
-      title: 'Memory',
-      field: 'maxmem',
-      render: (row: QemuVm) => bytesToGbString(row.maxmem),
-    },
-  ];
-
   return (
-    <InfoCard title="Virtual Machines">
       <Table
+        title='Virtual Machines'
         options={{ search: false, paging: false, padding: 'dense' }}
         columns={columns}
         data={value}
       />
-    </InfoCard>
   );
 };

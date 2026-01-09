@@ -1,4 +1,10 @@
-import { ProxmoxNode, ProxmoxNodeStatus, ProxmoxNodeStats, QemuVm, NodeDisk } from '../types';
+import {
+  ProxmoxNode,
+  ProxmoxNodeStatus,
+  ProxmoxNodeStats,
+  QemuVm,
+  NodeDisk,
+} from '../types';
 import { Timeframe } from '../utils/timeframe';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -44,8 +50,8 @@ export class ProxmoxApiClient {
   async getNodeDisks(id: string): Promise<Array<NodeDisk>> {
     const res = await fetch(`${this._baseUrl}/nodes/${id}/disks/list`, {
       headers: {
-        Authorization: this._authHeader
-      }
+        Authorization: this._authHeader,
+      },
     });
 
     if (!res.ok) {
@@ -99,20 +105,38 @@ export class ProxmoxApiClient {
   }
 
   async getNodeVms(id: string): Promise<Array<QemuVm>> {
-    const res = await fetch(
-        `${this._baseUrl}/nodes/${id}/qemu`, {
-            headers: {
-                Authorization: this._authHeader
-            }
-        }
-    );
+    const res = await fetch(`${this._baseUrl}/nodes/${id}/qemu`, {
+      headers: {
+        Authorization: this._authHeader,
+      },
+    });
 
     if (!res.ok) {
-        throw new Error(`Proxmox API error: ${res.statusText}`);
+      throw new Error(`Proxmox API error: ${res.statusText}`);
     }
 
     const json = await res.json();
     return json.data as Array<QemuVm>;
+  }
+
+  async nodeHasToUpdate(id: string): Promise<boolean> {
+    const res = await fetch(`${this._baseUrl}/nodes/${id}/apt/update`, {
+      headers: {
+        Authorization: this._authHeader,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+
+    if (Array.isArray(json.data) && json.data.length > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   private calculateMemoryUsage(nodeStatus: ProxmoxNodeStatus) {
