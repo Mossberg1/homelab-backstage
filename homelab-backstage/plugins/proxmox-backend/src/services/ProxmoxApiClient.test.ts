@@ -298,4 +298,37 @@ describe('ProxmoxApiClient', () => {
             expect(client.getNodeVms(nodeId)).rejects.toThrow();
         });
     });
+
+    describe('nodeHasToUpdate', () => {
+        const nodeId = 'pve1';
+
+        test('returns true if response is not empty', async () => {
+            const mockData = ['update1', 'update2'];
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData })
+            });
+
+            const hasToUpdate = await client.nodeHasToUpdate(nodeId);
+
+            expect(hasToUpdate).toBe(true);
+        });
+
+        test('returns false if response is empty', async () => {
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: [] })
+            });
+
+            const hasToUpdate = await client.nodeHasToUpdate(nodeId);
+
+            expect(hasToUpdate).toBe(false);
+        });
+
+        test('throws if API response is not ok', async () => {
+            fetchMock.mockResolvedValue({ ok: false });
+            expect(client.nodeHasToUpdate(nodeId)).rejects.toThrow();
+        });
+    });
 });

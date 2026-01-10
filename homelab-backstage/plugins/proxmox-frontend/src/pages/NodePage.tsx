@@ -12,6 +12,7 @@ import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeCompo
 import { NodeMetadataCard } from '../components/NodeMetadataCardComponent/NodeMetadataCardComponent';
 import { VmTable } from '../components/VmTableComponent/VmTableComponent';
 import { DisksTable } from '../components/DisksTableComponent/DisksTableComponent';
+import { HasToUpdateWarning } from '../components/HasToUpdateWarningComponent/HasToUpdateWarningComponent';
 
 export const NodePage: React.FC = () => {
   const { entity } = useEntity();
@@ -29,6 +30,10 @@ export const NodePage: React.FC = () => {
         </ContentHeader>
 
         <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <HasToUpdateWarning nodeId={nodeId} />
+          </Grid>
+
           {/* Top Row: Summary & Health (Stays the same) */}
           <Grid item xs={12} md={4}>
             <NodeMetadataCard nodeId={nodeId} />
