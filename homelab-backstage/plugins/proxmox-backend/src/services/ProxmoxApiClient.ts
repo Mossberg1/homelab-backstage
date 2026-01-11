@@ -139,6 +139,21 @@ export class ProxmoxApiClient {
     return false;
   }
 
+  async getVmOsInfo(nodeId: string, vmId: number): Promise<any> {
+    const res = await fetch(`${this._baseUrl}/nodes/${nodeId}/qemu/${vmId}/agent/get-osinfo`,{
+      headers: {
+        Authorization: this._authHeader
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    return json.data;
+  }
+
   private calculateMemoryUsage(nodeStatus: ProxmoxNodeStatus) {
     const used = nodeStatus.memory.used;
     const total = nodeStatus.memory.total;

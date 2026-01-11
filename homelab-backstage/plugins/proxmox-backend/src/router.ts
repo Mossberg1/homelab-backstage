@@ -92,5 +92,19 @@ export async function createRouter({
     return res.json(vms);
   });
 
+  router.get('/nodes/:nodeId/vms/:vmId', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const vmId = Number(req.params.vmId);
+
+    let osinfo = null;
+
+    try {
+      osinfo = await proxmoxApi.getVmOsInfo(nodeId, vmId);
+    } catch (error) {
+      return res.json(error);
+    }
+    return res.json(osinfo);
+  });
+
   return router;
 }
