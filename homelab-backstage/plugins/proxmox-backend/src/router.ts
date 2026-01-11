@@ -92,18 +92,13 @@ export async function createRouter({
     return res.json(vms);
   });
 
-  router.get('/nodes/:nodeId/vms/:vmId', async (req, res) => {
+  router.get('/nodes/:nodeId/vms/:vmId/os', async (req, res) => {
     const nodeId = req.params.nodeId;
     const vmId = Number(req.params.vmId);
 
-    let osinfo = null;
+    const os = await proxmoxApi.getVmOsInfo(nodeId, vmId);
 
-    try {
-      osinfo = await proxmoxApi.getVmOsInfo(nodeId, vmId);
-    } catch (error) {
-      return res.json(error);
-    }
-    return res.json(osinfo);
+    return res.json(os.result['pretty-name']);
   });
 
   return router;
