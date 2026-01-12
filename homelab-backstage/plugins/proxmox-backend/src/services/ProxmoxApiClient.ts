@@ -4,6 +4,7 @@ import {
   ProxmoxNodeStats,
   QemuVm,
   NodeDisk,
+  Rrddata,
 } from '../types';
 import { Timeframe } from '../utils/timeframe';
 
@@ -151,6 +152,22 @@ export class ProxmoxApiClient {
     }
 
     const json = await res.json();
+    return json.data;
+  }
+
+  async getVmStats(nodeId: string, vmId: number, timeframe: Timeframe = Timeframe.Hour): Promise<Array<Rrddata>> {
+    const res = await fetch(`${this._baseUrl}/nodes/${nodeId}/qemu/${vmId}/rrddata?timeframe=${timeframe}`, {
+      headers: {
+        Authorization: this._authHeader
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+
     return json.data;
   }
 

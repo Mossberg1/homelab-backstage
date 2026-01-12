@@ -101,5 +101,13 @@ export async function createRouter({
     return res.json(os.result['pretty-name']);
   });
 
+  router.get('/nodes/:nodeId/vms/:vmId/stats', async (req, res) => {
+    const { nodeId, vmId } = req.params;
+    
+    const stats = await proxmoxApi.getVmStats(nodeId, Number(vmId));
+
+    return res.json(stats)
+  });
+
   return router;
 }

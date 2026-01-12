@@ -1,6 +1,6 @@
 import { ProxmoxApiClient, ProxmoxApiClientOptions } from './ProxmoxApiClient';
 import { Timeframe } from '../utils/timeframe';
-import { NodeDisk, ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm } from '../types';
+import { NodeDisk, ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm, Rrddata } from '../types';
 
 
 // Mock fetch()
@@ -118,6 +118,21 @@ const mockNodeDisk: NodeDisk = {
     used: 'test-used',
     vendor: 'test-vendor',
     wwn: 'test-wwn'
+}
+
+
+const mockRrddata: Rrddata = {
+    maxmem: 100,
+    mem: 50,
+    maxdisk: 100,
+    maxcpu: 10,
+    time: 12135432,
+    diskwrite: 50,
+    diskread: 30,
+    disk: 100,
+    cpu: 5,
+    netout: 50,
+    netin: 50
 }
 
 
@@ -329,6 +344,29 @@ describe('ProxmoxApiClient', () => {
         test('throws if API response is not ok', async () => {
             fetchMock.mockResolvedValue({ ok: false });
             expect(client.nodeHasToUpdate(nodeId)).rejects.toThrow();
+        });
+    });
+
+    describe('getVmStats', () => {
+        test('test if rrddata is returned when response is ok', async () => {
+            const mockData = [mockRrddata, mockRrddata];
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData })
+            });
+
+            const stats = await client.getVmStats('pve', 100);
+
+            expect(stats).toEqual(mockData);
+        });
+
+        test('test if error is thrown if API response is not ok', async () => {
+            fetchMock.mockResolvedValue({
+                ok: false
+            });
+
+            expect(client.getVmStats('pve', 100)).rejects.toThrow();
         });
     });
 });
