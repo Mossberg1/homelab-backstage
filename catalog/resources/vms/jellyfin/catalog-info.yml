@@ -7,7 +7,7 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:.
     proxmox.io/node-id: pve
-    proxmox.io/vm-id: 101
+    proxmox.io/vm-id: '101'
     proxmox.io/type: vm
 spec:
   type: vm
