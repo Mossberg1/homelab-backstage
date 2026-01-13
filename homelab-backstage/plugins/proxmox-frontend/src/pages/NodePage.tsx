@@ -1,17 +1,18 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { CpuGauge } from '../components/CpuGaugeComponent/CpuGaugeComponent';
-import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeComponent';
 import { Grid } from '@material-ui/core';
-import { NodeMetadataCard } from '../components/NodeMetadataCardComponent/NodeMetadataCardComponent';
 import {
   Content,
   ContentHeader,
-  InfoCard,
   Page,
   SupportButton,
 } from '@backstage/core-components';
+import { CpuGauge } from '../components/CpuGaugeComponent/CpuGaugeComponent';
+import { MemoryGauge } from '../components/MemoryGaugeComponent/MemoryGaugeComponent';
+import { NodeMetadataCard } from '../components/NodeMetadataCardComponent/NodeMetadataCardComponent';
 import { VmTable } from '../components/VmTableComponent/VmTableComponent';
+import { DisksTable } from '../components/DisksTableComponent/DisksTableComponent';
+import { HasToUpdateWarning } from '../components/HasToUpdateWarningComponent/HasToUpdateWarningComponent';
 
 export const NodePage: React.FC = () => {
   const { entity } = useEntity();
@@ -29,28 +30,29 @@ export const NodePage: React.FC = () => {
         </ContentHeader>
 
         <Grid container spacing={3}>
-          {/* Metadata */}
           <Grid item xs={12}>
+            <HasToUpdateWarning nodeId={nodeId} />
+          </Grid>
+
+          {/* Top Row: Summary & Health (Stays the same) */}
+          <Grid item xs={12} md={4}>
             <NodeMetadataCard nodeId={nodeId} />
           </Grid>
-
-          {/* Metrics */}
           <Grid item xs={12} md={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <CpuGauge nodeId={nodeId} />
-              </Grid>
-              <Grid item xs={12}>
-                <MemoryGauge nodeId={nodeId} />
-              </Grid>
-            </Grid>
+            <CpuGauge nodeId={nodeId} />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <MemoryGauge nodeId={nodeId} />
           </Grid>
 
-          {/* Workloads */}
-          <Grid item xs={12} md={8}>
-            <InfoCard title="Running Workloads">
-              <VmTable nodeId={nodeId} />
-            </InfoCard>
+          {/* Middle Row: The most content-heavy table gets full width */}
+          <Grid item xs={12}>
+            <VmTable nodeId={nodeId} />
+          </Grid>
+
+          {/* Bottom Row: Secondary table */}
+          <Grid item xs={12}>
+            <DisksTable nodeId={nodeId} />
           </Grid>
         </Grid>
       </Content>

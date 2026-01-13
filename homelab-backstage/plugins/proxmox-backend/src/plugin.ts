@@ -29,7 +29,7 @@ export const proxmoxPlugin = createBackendPlugin({
          * until i figure out how to test authenticated endpoints.
          */
         httpRouter.addAuthPolicy({
-          path: '/nodes',
+          path: '/',
           allow: 'unauthenticated',
         });
       },

@@ -1,17 +1,18 @@
 apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
-  name: proxmox-main-node
-  title: Proxmox Node
-  description: Proxmox.
+  name: jellyfin-vm
+  title: Jellyfin VM
+  description: Jellyfin Virtual Machine.
   annotations:
     backstage.io/techdocs-ref: dir:.
     proxmox.io/node-id: pve
-    proxmox.io/type: node
+    proxmox.io/vm-id: 101
+    proxmox.io/type: vm
 spec:
-  type: hypervisor
+  type: vm
   lifecycle: production
   owner: user:Mossberg1
   system: homelab
   dependsOn:
-    - resource:dell-poweredge-r440
+    - resource:proxmox-main-node

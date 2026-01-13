@@ -1,6 +1,6 @@
 import { ProxmoxApiClient, ProxmoxApiClientOptions } from './ProxmoxApiClient';
 import { Timeframe } from '../utils/timeframe';
-import { ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm } from '../types';
+import { NodeDisk, ProxmoxNode, ProxmoxNodeStats, ProxmoxNodeStatus, QemuVm, Rrddata } from '../types';
 
 
 // Mock fetch()
@@ -104,6 +104,37 @@ const mockVm: QemuVm = {
     netout: 0
 }
 
+const mockNodeDisk: NodeDisk = {
+    devpath: 'test-devpath',
+    gpt: true,
+    mounted: true,
+    osdid: 0,
+    'osdid-list': [0, 1, 2, 3],
+    size: 340234543,
+    health: 'test-health',
+    model: 'test-model',
+    parent: 'test-parent',
+    serial: 'test-serial',
+    used: 'test-used',
+    vendor: 'test-vendor',
+    wwn: 'test-wwn'
+}
+
+
+const mockRrddata: Rrddata = {
+    maxmem: 100,
+    mem: 50,
+    maxdisk: 100,
+    maxcpu: 10,
+    time: 12135432,
+    diskwrite: 50,
+    diskread: 30,
+    disk: 100,
+    cpu: 5,
+    netout: 50,
+    netin: 50
+}
+
 
 describe('ProxmoxApiClient', () => {
     let client: ProxmoxApiClient;
@@ -158,6 +189,31 @@ describe('ProxmoxApiClient', () => {
             const cpuUsage = await client.getNodeCpuUsage(nodeId);
 
             expect(cpuUsage).toBe(expectedCpuUsage);
+        });
+    });
+
+    describe('getNodeDisks', () => {
+        const nodeId = 'pve1';
+
+        test('recives disks for a node on success', async () => {
+            const mockData = new Array<NodeDisk>(mockNodeDisk);
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData})
+            });
+
+            const disks = await client.getNodeDisks(nodeId);
+
+            expect(disks).toEqual(mockData)
+        });
+
+        test('should throw error when API response is not ok', async () => {
+            fetchMock.mockResolvedValue({
+                ok: false
+            });
+
+            expect(client.getNodeDisks(nodeId)).rejects.toThrow();
         });
     });
 
@@ -255,6 +311,62 @@ describe('ProxmoxApiClient', () => {
         test('throws if API response is not ok', async () => {
             fetchMock.mockResolvedValue({ ok: false });
             expect(client.getNodeVms(nodeId)).rejects.toThrow();
+        });
+    });
+
+    describe('nodeHasToUpdate', () => {
+        const nodeId = 'pve1';
+
+        test('returns true if response is not empty', async () => {
+            const mockData = ['update1', 'update2'];
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData })
+            });
+
+            const hasToUpdate = await client.nodeHasToUpdate(nodeId);
+
+            expect(hasToUpdate).toBe(true);
+        });
+
+        test('returns false if response is empty', async () => {
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: [] })
+            });
+
+            const hasToUpdate = await client.nodeHasToUpdate(nodeId);
+
+            expect(hasToUpdate).toBe(false);
+        });
+
+        test('throws if API response is not ok', async () => {
+            fetchMock.mockResolvedValue({ ok: false });
+            expect(client.nodeHasToUpdate(nodeId)).rejects.toThrow();
+        });
+    });
+
+    describe('getVmStats', () => {
+        test('test if rrddata is returned when response is ok', async () => {
+            const mockData = [mockRrddata, mockRrddata];
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: async () => ({ data: mockData })
+            });
+
+            const stats = await client.getVmStats('pve', 100);
+
+            expect(stats).toEqual(mockData);
+        });
+
+        test('test if error is thrown if API response is not ok', async () => {
+            fetchMock.mockResolvedValue({
+                ok: false
+            });
+
+            expect(client.getVmStats('pve', 100)).rejects.toThrow();
         });
     });
 });

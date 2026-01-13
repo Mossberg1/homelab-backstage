@@ -52,6 +52,13 @@ export async function createRouter({
     return res.json(cpu);
   });
 
+  router.get('/nodes/:nodeId/disks', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const disks = await proxmoxApi.getNodeDisks(nodeId);
+
+    return res.json(disks);
+  });
+
   router.get('/nodes/:nodeId/mem-usage', async (req, res) => {
     const nodeId = req.params.nodeId;
 
@@ -70,12 +77,36 @@ export async function createRouter({
     return res.json(stats);
   });
 
+  router.get('/nodes/:nodeId/needs-update', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const hasToUpdate = await proxmoxApi.nodeHasToUpdate(nodeId);
+
+    return res.json(hasToUpdate);
+  });
+
   router.get('/nodes/:nodeId/vms', async (req, res) => {
     const nodeId = req.params.nodeId;
 
     const vms = await proxmoxApi.getNodeVms(nodeId);
 
     return res.json(vms);
+  });
+
+  router.get('/nodes/:nodeId/vms/:vmId/os', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const vmId = Number(req.params.vmId);
+
+    const os = await proxmoxApi.getVmOsInfo(nodeId, vmId);
+
+    return res.json(os.result['pretty-name']);
+  });
+
+  router.get('/nodes/:nodeId/vms/:vmId/stats', async (req, res) => {
+    const { nodeId, vmId } = req.params;
+    
+    const stats = await proxmoxApi.getVmStats(nodeId, Number(vmId));
+
+    return res.json(stats)
   });
 
   return router;

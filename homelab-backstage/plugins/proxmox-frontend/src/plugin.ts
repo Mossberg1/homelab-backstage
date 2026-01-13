@@ -2,8 +2,9 @@ import {
   createPlugin,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { attachEntityPage } from '@backstage/plugin-catalog-react';
 import { rootRouteRef } from './routes';
+
+// Take incpiration from this: https://www.youtube.com/watch?v=SUkAnJBKTtQ&t=4s
 
 export const proxmoxFrontendPlugin = createPlugin({
   id: 'proxmox-frontend',
