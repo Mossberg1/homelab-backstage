@@ -28,6 +28,9 @@ import { Grid } from '@material-ui/core';
 
 export const VmPage: React.FC = () => {
   const { entity } = useEntity();
+  
+  const fetchApi = useApi(fetchApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
 
   const vmTitle = entity.metadata.title;
   const nodeId = entity.metadata.annotations?.['proxmox.io/node-id'];
@@ -40,9 +43,6 @@ export const VmPage: React.FC = () => {
       />
     );
   }
-
-  const fetchApi = useApi(fetchApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
 
   // Fetch VM rrddata
   const [rrddataState, execute] = useAsyncFn(async () => {
