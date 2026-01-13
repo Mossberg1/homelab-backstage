@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: jellyfin-vm
+  title: Jellyfin VM
+  description: Jellyfin Virtual Machine.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    proxmox.io/node-id: pve
+    proxmox.io/vm-id: 101
+    proxmox.io/type: vm
+spec:
+  type: vm
+  lifecycle: production
+  owner: user:Mossberg1
+  system: homelab
+  dependsOn:
+    - resource:proxmox-main-node
