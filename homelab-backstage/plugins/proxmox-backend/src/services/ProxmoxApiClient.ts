@@ -140,6 +140,23 @@ export class ProxmoxApiClient {
     return false;
   }
 
+  async getVm(nodeId: string, vmId: number): Promise<QemuVm | null> {
+    const res = await fetch(`${this._baseUrl}/nodes/${nodeId}/qemu`, {
+      headers: {
+        Authorization: this._authHeader
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Proxmox API error: ${res.statusText}`);
+    }
+
+    const result = await res.json();
+    const vms: Array<QemuVm> = result.data;
+
+    return vms.find(v => v.vmid === vmId) ?? null;
+  }
+
   async getVmOsInfo(nodeId: string, vmId: number): Promise<any> {
     const res = await fetch(`${this._baseUrl}/nodes/${nodeId}/qemu/${vmId}/agent/get-osinfo`,{
       headers: {
