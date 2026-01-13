@@ -16,3 +16,5 @@ spec:
   system: homelab
   dependsOn:
     - resource:proxmox-main-node
+  subcomponentOf:
+    - resource:proxmox-main-node
