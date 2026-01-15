@@ -5,7 +5,7 @@ metadata:
   title: Jellyfin VM
   description: Jellyfin Virtual Machine.
   annotations:
-    backstage.io/techdocs-ref: dir:.
+    backstage.io/techdocs-ref: dir:docs
     proxmox.io/node-id: pve
     proxmox.io/vm-id: '101'
     proxmox.io/type: vm
