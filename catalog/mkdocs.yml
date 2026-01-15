@@ -1,0 +1,11 @@
+site_name: Homelab Documentation
+theme:
+  name: material
+plugins:
+  - monorepo
+nav:
+  - Home: index.md
+  - Hypervisors:
+      - Proxmox: '!include docs/resources/hypervisors/proxmox-node/mkdocs.yml'
+  - Servers: 
+      - Dell R440: '!include docs/resources/servers/dell-poweredge-r440/mkdocs.yml'

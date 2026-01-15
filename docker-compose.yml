@@ -14,6 +14,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  catalog:
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    container_name: homelab-catalog
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./catalog:/docs
+  
+  # This is just an example to get a shared volume for backstage to be able to acecss the catalog files.
+  # Maybe add a external storage container solution later?
+  backstage:
+    build: .
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./catalog:/catalog
+
+
 volumes:
   postgres_data:
 
