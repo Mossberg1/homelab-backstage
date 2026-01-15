@@ -5,7 +5,7 @@ metadata:
   title: Proxmox Node
   description: Proxmox.
   annotations:
-    backstage.io/techdocs-ref: dir:docs
+    backstage.io/techdocs-ref: dir:.
     proxmox.io/node-id: pve
     proxmox.io/type: node
 spec:
