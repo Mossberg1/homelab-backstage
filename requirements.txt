@@ -1,3 +1,4 @@
 mkdocs
+mkdocs-monorepo-plugin
 mkdocs-techdocs-core
 mkdocs-material

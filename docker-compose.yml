@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+  # Postgres database for backstage
   postgres:
     image: postgres:16
     container_name: homelab-backstage-db
@@ -13,7 +14,40 @@ services:
       POSTGRES_DB: homelab-backstage-db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  
+  # Static file storage for the cluster
+  minio:
+    image: minio/minio:latest
+    container_name: homelab-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000" # API
+      - "9001:9001" # Web UI
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: admin123!
+    entrypoint: "/bin/sh"
+    command: > 
+      -c "
+      mkdir -p /data/techdocs &&
+      minio server /data --console-address ':9001'
+      "
+    volumes:
+      - minio_data:/data
+  
+  # Homelab docs
+  homelab-docs:
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    container_name: homelab-docs
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./catalog:/docs
 
 volumes:
   postgres_data:
+  minio_data:
 

@@ -92,21 +92,46 @@ export async function createRouter({
     return res.json(vms);
   });
 
+  router.get('/nodes/:nodeId/vms/:vmId', async (req, res) => {
+    const nodeId = req.params.nodeId;
+    const vmId = Number(req.params.vmId);
+
+    if (isNaN(vmId)) {
+      res.status(400).json({ error: 'Invalid VM ID' });
+    }
+
+    const vm = await proxmoxApi.getVm(nodeId, vmId);
+    if (!vm) {
+      res.status(404).json({ error: 'VM not found' });
+    }
+
+    return res.json(vm);
+  });
+
   router.get('/nodes/:nodeId/vms/:vmId/os', async (req, res) => {
     const nodeId = req.params.nodeId;
     const vmId = Number(req.params.vmId);
 
-    const os = await proxmoxApi.getVmOsInfo(nodeId, vmId);
+    if (isNaN(vmId)) {
+      res.status(400).json({ error: 'Invalid VM ID' });
+    }
 
-    return res.json(os.result['pretty-name']);
+    const osinfo = await proxmoxApi.getVmOsInfo(nodeId, vmId);
+
+    return res.json(osinfo);
   });
 
   router.get('/nodes/:nodeId/vms/:vmId/stats', async (req, res) => {
-    const { nodeId, vmId } = req.params;
-    
+    const nodeId = req.params.nodeId;
+    const vmId = Number(req.params.vmId);
+
+    if (isNaN(vmId)) {
+      res.status(400).json({ error: 'Invalid VM ID' });
+    }
+
     const stats = await proxmoxApi.getVmStats(nodeId, Number(vmId));
 
-    return res.json(stats)
+    return res.json(stats);
   });
 
   return router;
