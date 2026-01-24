@@ -46,6 +46,14 @@ services:
       - "8000:8000"
     volumes:
       - ./catalog:/docs
+  
+  # Backstage
+  backstage:
+    image: backstage
+    env_file:
+      - homelab-backstage/.env
+    ports: 
+      - 7007:7007
 
 volumes:
   postgres_data:
