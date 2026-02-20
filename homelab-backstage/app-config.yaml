@@ -122,7 +122,7 @@ catalog:
       rules:
         - allow: [User, Group]
     
-    # C Template
+    # C Template 
     - type: url
       target: https://github.com/Mossberg1/homelab-backstage/blob/main/templates/c-template/template.yaml
       rules:
