@@ -3,3 +3,4 @@
 ## Table of Contents
 
 - [Home](index.md)
+- [Directories](directories.md)

@@ -28,6 +28,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.yarn
 .env.test
 
 # Build output
