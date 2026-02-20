@@ -9,3 +9,5 @@ nav:
       - Proxmox: '!include docs/resources/hypervisors/proxmox-node/mkdocs.yml'
   - Servers: 
       - Dell R440: '!include docs/resources/servers/dell-poweredge-r440/mkdocs.yml'
+  - VMs:
+    - Jellyfin VM: '!include docs/resources/vms/jellyfin/mkdocs.yml'
