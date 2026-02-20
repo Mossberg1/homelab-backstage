@@ -124,7 +124,7 @@ catalog:
     
     # C Template
     - type: url
-      target: https://github.com/Mossberg1/homelab-docs/blob/main/templates/c-template/template.yaml
+      target: https://github.com/Mossberg1/homelab-backstage/blob/main/templates/c-template/template.yaml
       rules:
         - allow: [Template]
 
